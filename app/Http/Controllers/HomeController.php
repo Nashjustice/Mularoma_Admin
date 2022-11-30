@@ -33,8 +33,11 @@ use App\comments;
 use App\admin;
 use App\kyc;
 use App\ref_set;
+use App\Wallet;
+use App\MpesaTransaction;
 use GuzzleHttp\Client as GuzzleClient;
 use DotenvEditor;
+use App\TokenHistory;
 
 use CoinbaseCommerce\ApiClient;
 use CoinbaseCommerce\Resources\Checkout;
@@ -64,9 +67,65 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $cash = Wallet::where('user_id',Auth::user()->id)->first();
         
-        $investments=Investments::all();
-         return view('user.index')->with(compact('investments'));
+        //count number of days since token was bought
+        $models = TokenHistory::where('user_id', Auth::user()->id)->get();
+        foreach($models as $model){
+            $date1 = $model->created_at;
+            $date2 = date('Y-m-d H:i:s');
+            $dateDiff = $this->dateDiffInDays($date1, $date2);
+            
+            $model->days = $dateDiff;
+            $model->save();
+        }
+        
+        //accumilating token profit
+        $tokenModels = TokenHistory::where('user_id', Auth::user()->id)->get();
+        foreach($tokenModels as $tokenModel){
+            $return_expected = $tokenModel->return_expected;
+            $days = $tokenModel->days;
+            $profit = $return_expected * $days;
+            
+            $tokenModel->total_profit = $profit;
+            $tokenModel->save();
+        }
+        $totalProfitFromToken = TokenHistory::where('user_id', Auth::user()->id)->sum('total_profit');
+       
+        //check token balance withdrawals
+        $tokenAfterWithdrawal = MpesaTransaction::where('user_id', Auth::user()->id)->where('type', 'TokenToWallet')->sum('amount');
+        $actualBalance = $totalProfitFromToken - $tokenAfterWithdrawal;
+        //quick add of profit accumilation from token 
+        $cash->token = $actualBalance;
+        $cash->save();
+        
+        //Get different balances
+        $mainWallet = $cash->main;
+        $referalEarning = $cash->referal;
+        $tokenBalance= $cash->token;
+        
+        //total withdrawal
+        $toMpesaWithdraw = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','Withdraw')->sum('amount');
+        $toTokenWallet = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','TokenToWallet')->sum('amount');
+        $toReferalWallet = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','ReferalToWallet')->sum('amount');
+        $withdraw = $toMpesaWithdraw + $toTokenWallet + $toReferalWallet;
+        
+        //actual deposit balance        
+        $mainDeposit = MpesaTransaction::where('user_id', Auth::user()->id)->where('type', 'Deposit')->sum('amount');
+        $activationFee = MpesaTransaction::where('user_id',Auth::user()->id)->where('amount', 100)->where('type', 'Deposit')->first();
+        $deposit = $mainDeposit - $activationFee->amount;
+        
+        $buyingTokens = MpesaTransaction::where('user_id', Auth::user()->id)->where('type', 'Invest')->sum('amount');
+        $depositBalance = $deposit - $buyingTokens;
+     
+         return view('user.index')->with(compact('tokenBalance','mainWallet', 'depositBalance', 'withdraw', 'referalEarning'));
+    }
+    
+    //function to count number of days since created
+    public function dateDiffInDays($date1, $date2) 
+    {
+      $diff = strtotime($date2) - strtotime($date1);
+      return abs(round($diff / 86400));
     }
     
      public function user_ref_wd(Request $req)

@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\MpesaController;
+use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\InvestController;
+use App\Http\Controllers\Auth\LoginController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,19 +21,35 @@ Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
 
+Route::get('/mp/accesstoken',[MpesaController::class, 'getAccessToken']);
+Route::get('/registerurl',[MpesaController::class, 'registerURLS']);
+Route::post('/c2b',[MpesaController::class, 'c2b']);
+Route::post('/b2c',[MpesaController::class, 'b2c']);
+Route::post('/stkpush',[MpesaController::class, 'stkPush']);
+Route::post('/activation/stkpush',[MpesaController::class, 'stkPushActivation']);
+Route::get('/store',[MpesaController::class, 'store']);
+
+Route::post('/callback/validation', [MpesaController::class, 'validation']);
+Route::post('/callback/confirmation', [MpesaController::class, 'confirmation']);
+Route::post('/callback/queue', [MpesaController::class, 'queueTimeOut']);
+Route::post('/callback/result', [MpesaController::class, 'result']);
+Route::post('/callback/stkpush', [MpesaController::class, 'stkPushCallback']);
+
 Route::get('/', function () {
  	$user = Auth::User();
-	if(!empty($user) && ($user->user_role!=1))
-	{
+ 	
+	if(!empty($user)){
 	    
+	    if($user->activation_status == null){
+	        return redirect('/activate');
+	    }
 	    
     	return redirect('/'.$user->username.'/dashboard');
-    
 	}
 	else
 	{
 		return redirect('/login');
-	}
+	} 
 });
 
 
@@ -37,10 +58,9 @@ Route::post('login/post', array(
   'uses' => 'Auth\LoginController@doLogin'
 ));
 
+Route::get('/withdraw_history', 'HistoryController@withdrawalHistory')->middleware('auth');
 
-
-
-
+Route::get('/token_history', 'HistoryController@tokenHistory')->middleware('auth');
 
 Route::get('cc',function(){
     
@@ -52,19 +72,25 @@ Route::get('cc',function(){
     
 });
 
-
-
 Route::get('/activate', function () {
- 	$user = Auth::User()->status;
-	if(($user)==1)
-	{
-    	return view('auth.activate');
-	}
-	else
-	{
-		return redirect('/login');
-	}
+    return view('auth.activate');
 })->middleware('auth');
+
+// Route::get('/activate', function () {
+//  	$user = Auth::User()->status;
+// 	if(($user)==1)
+// 	{
+//     	return view('auth.activate');
+// 	}
+// 	else
+// 	{
+// 		return redirect('/login');
+// 	}
+// })->middleware('auth');
+
+Route::get('/confirm_payment',function(){
+    return view('user.confirm_payment');
+});
 
 
 Route::get('/{username}/affiliates', 'AffiliatesController@showaffiliates')->middleware('auth');
@@ -135,6 +161,12 @@ Route::post('/pay', function () {
 Route::get('/pay', function () {
  return view('pay');
 });
+
+Route::get('/investments', 'InvestmentController@index')->middleware('auth');
+
+// Route::get('/investments', function(){
+//     return view('user.investments');
+// });
 
 Route::get('/login', function () {
 	$user = Auth::User();

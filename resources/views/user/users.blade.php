@@ -21,12 +21,12 @@
                       <tr>
                          <th class="wd-lg-25p">Username</th>
                          <th class="wd-lg-25p">Activated By</th>
-                         <th class="wd-lg-25p">Activation code</th>
+                        
                         <th class="wd-lg-25p">email</th>
                         <th class="wd-lg-25p tx-right">phone</th>
                         <th class="wd-lg-25p tx-right">wallet</th>
                         <th class="wd-lg-25p tx-right">Referal Bonus</th>
-                        <th class="wd-lg-25p tx-right">Affiliate</th>
+                      
                         <th class="wd-lg-25p tx-right">Action</th>
                       </tr>
                     </thead>
@@ -41,12 +41,12 @@
                         @else
                         <td class="tx-right tx-medium tx-inverse">User</td>
                         @endif
-                         <td class="tx-right tx-medium tx-inverse">{{$user->mpesa_code}}</td>
+                         
                         <td>{{$user->email}}</td>
                         <td class="tx-right tx-medium tx-inverse">{{$user->phone}}</td>
                         <td class="tx-right tx-medium tx-inverse">{{$user->wallet}}</td>
                         <td class="tx-right tx-medium tx-inverse">{{$user->ref_bal}}</td>
-                        <td class="tx-right tx-medium tx-inverse">{{$user->referal}}</td>
+                      
                         
                         @if($user->status==2)
                         <td class="tx-right tx-medium tx-inverse"><a href="ban/{{$user->id}}" class="btn btn-warning">Ban</a></td>

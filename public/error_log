@@ -1,2 +1,3 @@
 [18-Mar-2022 02:13:20 Africa/Nairobi] PHP Fatal error:  Cannot use Mail as Mail because the name is already in use in /home/elshadai/deploy.elshadaigtinvestment.org/app/Http/Controllers/Auth/LoginController.php on line 15
 [21-Mar-2022 00:52:03 Africa/Nairobi] PHP Fatal error:  Cannot use Carbon\Carbon as Carbon because the name is already in use in /home/elshadai/deploy.elshadaigtinvestment.org/app/Http/Controllers/AffiliatesController.php on line 11
+[25-Nov-2022 18:45:21 Africa/Nairobi] PHP Fatal error:  Cannot use App\Session as Session because the name is already in use in /home/elshadai/admin.elshadaigtinvestment.org/app/Http/Controllers/HomeController.php on line 41

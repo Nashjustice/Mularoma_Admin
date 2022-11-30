@@ -21,6 +21,7 @@ use Hackdelta\Mpesa\Extras\MpesaConstants;
 use Hackdelta\Mpesa\Exceptions\MpesaInternalException;
 use Hackdelta\Mpesa\Exceptions\MpesaClientExceptions;
 use Hackdelta\Mpesa\Exceptions\MpesaServerException;
+use App\MpesaTransaction;
 
 class AffiliatesController extends Controller
 {
@@ -229,22 +230,20 @@ class AffiliatesController extends Controller
     
     public function withs(){
         
-        $withs=Withdraw::all();
+        $withs=MpesaTransaction::where('type','Withdraw')->orWhere('type','ReferalToWallet')->orWhere('type','TokenToWallet')->get();
         
         return view('user.withs')->with(compact('withs'));
     }
     
     public function depos(){
         
-        $depos=mobilepayments::all();
+        $deposits = MpesaTransaction::where('type','Deposit')->get();
         
-        return view('user.depos')->with(compact('depos'));
+        return view('user.depos')->with(compact('deposits'));
     }
     public function active(){
         
-        $users=User::where('status',2)
-         ->orWhere('status', 3)
-        ->get();
+        $users=User::where('status',2)->orWhere('status', 3)->get();
         
         return view('user.users')->with(compact('users'));
     }

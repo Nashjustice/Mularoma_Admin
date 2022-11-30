@@ -86,10 +86,10 @@
                                               
                                             </div>
                                             <div class="card-sigin">
-                                               
+                                               <div class="alert alert-success" >For any assistance please contact the admin via WhatsApp {{env('SUPPORT_LINE')}} </div>
                                                 
                                                 <div class="main-signup-header">
-                                                    <h2>Admin Dashboard!</h2>
+                                                    <h2>Welcome back!</h2>
                                                     <h5 class="fw-semibold mb-4">Please sign in to continue.</h5>
                                                     <form method="POST" action="{{ route('session_sa.upload_u2s') }}">
                                                         @csrf
@@ -129,12 +129,15 @@
                                                         </div><button class="btn btn-main-primary btn-block">Sign In</button>
                                                       
                                                     </form>
-                                                    <div class="main-signin-footer mt-2">
+                                                    <div class="main-signin-footer d-flex justify-content-between">
                                                        @if (Route::has('password.request'))
                                                             <a class="btn btn-link text-danger" href="{{ route('password.request') }}">
                                                                 {{ __('Forgot Your Password?') }}
                                                             </a>
                                                         @endif
+                                                        <a class="btn btn-link " href="/register">
+                                                            {{ __('Not a Member ?') }}
+                                                        </a>
                                                     </div>
                                                     <!--<div class="main-signin-footer mt-5">-->
                                                        

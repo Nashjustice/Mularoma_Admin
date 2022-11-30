@@ -10,10 +10,10 @@
         <meta name="Keywords" content="admin,admin dashboard,admin dashboard template,admin panel template,admin template,admin theme,bootstrap 4 admin template,bootstrap 4 dashboard,bootstrap admin,bootstrap admin dashboard,bootstrap admin panel,bootstrap admin template,bootstrap admin theme,bootstrap dashboard,bootstrap form template,bootstrap panel,bootstrap ui kit,dashboard bootstrap 4,dashboard design,dashboard html,dashboard template,dashboard ui kit,envato templates,flat ui,html,html and css templates,html dashboard template,html5,jquery html,premium,premium quality,sidebar bootstrap 4,template admin bootstrap 4"/>
 
         <!-- Title -->
-          <title> ELSHADAI GOLDEN TRADERS - Signup</title>
+          <title> Mulatoken - Signup</title>
 
         <!-- Favicon -->
-        <link rel="icon" href="{{ asset('assetss/img/brand/favicon.png')}}" type="image/x-icon"/>
+        <link rel="icon" href="{{ asset('img/logo_icon.svg')}}" type="image/x-icon"/>
 
         <!-- Icons css -->
         <link href="{{ asset('assetss/css/icons.css')}}" rel="stylesheet">
@@ -40,6 +40,14 @@
 
         <!--- Animations css-->
         <link href="{{ asset('assetss/css/animate.css')}}" rel="stylesheet">
+        
+        <style>
+            @media screen and (max-width: 480px) {
+              .login-image {
+                display: none;
+              }
+            }
+        </style>
 
     </head>
     <body class="error-page1 main-body bg-light text-dark">
@@ -56,19 +64,21 @@
             <div class="container-fluid">
                 <div class="row no-gutter">
                     <!-- The image half -->
-                  
+                    <div class="col-md-7 col-lg-7 col-xl-7 login-image" style="background: linear-gradient( rgba(0,0,0,0.4), rgba(0, 0, 0, 0.4) ), url('https://financefeeds.com/wp-content/uploads/2022/08/Forex.jpeg'); background-position: center;">
+                        <!--<img src="{{asset('images/login.jpg')}}" alt="Image" style="height:100vh;"/>-->
+                    </div>
                     <!-- The content half -->
-                    <div class="col-md-12 col-lg-12 col-xl-12 bg-white">
+                    <div class="col-md-5 col-lg-5 col-xl-5 bg-white">
                         <div class="login d-flex align-items-center py-2">
                             <!-- Demo content-->
                             <div class="container p-0">
                                 <div class="row">
                                     <div class="col-md-10 col-lg-10 col-xl-9 mx-auto">
-                                        <img src="https://elshadaigtinvestment.org/log.png" width="200" height="200">
+                                        <img src="{{asset('img/logo.svg')}}" width="200" height="200">
                                         <div class="card-sigin">
                                             <div class="mb-5 d-flex">
                                             
-                                                <h1 class="main-logo1 ms-1 me-0 my-auto tx-28"> Signup</h1>
+                                                <!--<h1 class="main-logo1 ms-1 me-0 my-auto tx-28"> Signup</h1>-->
 
                                                 <?php
                                                 if(request()->username){
@@ -78,7 +88,7 @@
                                                 }
                                                 ?>
                                             </div>
-                                            <div class="card-sigin">
+                                            <div class="card-sigin" style="margin-top: -5em">
                                                 <div class="main-signup-header">
                                                     <h2>Welcome onboard!</h2>
                                                     <h5 class="fw-semibold mb-4">Please sign up to continue.</h5>
@@ -110,12 +120,9 @@
                                                     </div>
                                                 </div>
 
-
-                                                
                                                 <div class="form-group row"> 
-
-                                                    <div class="col-sm-12">
-                                                    <label>Enter Your Email: </label>
+                                                    <div class="col-sm-6">
+                                                        <label>Enter Your Email: </label>
                                                           <input id="email" type="email" class="form-control @error('email') is-invalid @enderror regTxtBox" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Email Address">
 
                                                         @error('email')
@@ -124,12 +131,9 @@
                                                             </span>
                                                         @enderror
                                                     </div>
-                                                </div>
-
-                                                <div class="form-group row">
-
-                                                    <div class="col-sm-12">
-                                                    <label>Enter Username: </label>
+                                                    
+                                                    <div class="col-sm-6">
+                                                       <label>Enter Username: </label>
                                                        <input id="username" type="username" class="form-control @error('username') is-invalid @enderror regTxtBox" name="username" value="{{ old('username') }}" required  placeholder="Usernane">
 
                                                         @error('username')
@@ -139,11 +143,11 @@
                                                         @enderror
                                                     </div>
                                                 </div>
+
                                                 
                                                 <div class="form-group row">
-                                                    
-                                                    <div class="col-sm-12">
-                                                        <label>Enter mobile: </label>
+                                                    <div class="col-sm-6">
+                                                       <label>Enter mobile: </label>
                                                        <input id="number" type="number" class="form-control @error('phone') is-invalid @enderror regTxtBox" name="phone" value="{{ old('phone') }}" required autocomplete="phone" placeholder=" 254789326743 ">
 
                                                         @error('phone')
@@ -153,13 +157,12 @@
                                                             </span>
                                                         @enderror
                                                     </div>
-                                                </div>
-                                                    <div class="form-group row">
-                                                        <div class="col-sm-12">
+                                                    
+                                                    <div class="col-sm-6">
                                                      <label>Choose your country: </label>
                                                          <select class="form-control" name="country" >
                                                           
-                                                          <option value="Afganistan">Afghanistan</option>
+                                                           <option value="Afganistan">Afghanistan</option>
                                                            <option value="Albania">Albania</option>
                                                            <option value="Algeria">Algeria</option>
                                                            <option value="American Samoa">American Samoa</option>
@@ -270,7 +273,7 @@
                                                            <option value="Japan">Japan</option>
                                                            <option value="Jordan">Jordan</option>
                                                            <option value="Kazakhstan">Kazakhstan</option>
-                                                           <option value="Kenya">Kenya</option>
+                                                           <option value="KENYA" selected="selected">Kenya</option>
                                                            <option value="Kiribati">Kiribati</option>
                                                            <option value="Korea North">Korea North</option>
                                                            <option value="Korea Sout">Korea South</option>
@@ -340,7 +343,7 @@
                                                            <option value="Reunion">Reunion</option>
                                                            <option value="Romania">Romania</option>
                                                            <option value="Russia">Russia</option>
-                                                           <option value="Rwanda">Rwanda</option>
+                                                           <option value="RWANDA">Rwanda</option>
                                                            <option value="St Barthelemy">St Barthelemy</option>
                                                            <option value="St Eustatius">St Eustatius</option>
                                                            <option value="St Helena">St Helena</option>
@@ -375,7 +378,7 @@
                                                            <option value="Tahiti">Tahiti</option>
                                                            <option value="Taiwan">Taiwan</option>
                                                            <option value="Tajikistan">Tajikistan</option>
-                                                           <option value="Tanzania">Tanzania</option>
+                                                           <option value="TANZANIA">Tanzania</option>
                                                            <option value="Thailand">Thailand</option>
                                                            <option value="Togo">Togo</option>
                                                            <option value="Tokelau">Tokelau</option>
@@ -386,7 +389,7 @@
                                                            <option value="Turkmenistan">Turkmenistan</option>
                                                            <option value="Turks & Caicos Is">Turks & Caicos Is</option>
                                                            <option value="Tuvalu">Tuvalu</option>
-                                                           <option value="Uganda">Uganda</option>
+                                                           <option value="UGANDA">Uganda</option>
                                                            <option value="United Kingdom">United Kingdom</option>
                                                            <option value="Ukraine">Ukraine</option>
                                                            <option value="United Arab Erimates">United Arab Emirates</option>
@@ -462,11 +465,11 @@
                                                     </div>
                                                   </div>
 
-                                                <div class="">
+                                                <div class="" style="margin-top: -4em">
                                                     <div class="" align="center">
                                                         <br><br>
                                                       
-                                                            <button type="submit" class="collc btn btn-info" disabled="disabled"  id="btn">
+                                                            <button type="submit" class="btn btn-main-primary btn-block" disabled="disabled"  id="btn">
                                                                 {{ __('Register') }}
                                                             </button>
                                                       

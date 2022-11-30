@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Wallet;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -89,8 +90,8 @@ class RegisterController extends Controller
         $this->email = $data['email'];
         $this->usr = $data['username'];
         
-        if($data['country']=='Kenya'){
-             return User::create([
+        if($data['country']=='KENYA'){
+            $userData = [
             'firstname' => trim($data['Fname']),
             'lastname' => trim($data['Lname']),
             'phone' => trim($data['phone']),
@@ -101,11 +102,24 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'act_code' => $this->token,
             'status' => 1,
+            'role_id' => 1,
             'currency'=>"KES",
             'referal' => trim($data['ref']),
             'reg_date' => date('d-m-Y'),      
-        ]);
-        }else{
+            ];
+            
+            $user = User::create($userData);
+            
+            Wallet::create([
+                'user_id' => $user->id,
+                'main' => 0,
+                'referal' => 0,
+                'token' => 0,
+            ]);
+            
+            return $user;
+        }
+        else{
              return User::create([
             'firstname' => trim($data['Fname']),
             'lastname' => trim($data['Lname']),
@@ -117,6 +131,7 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'act_code' => $this->token,
             'status' => 1,
+            'role_id' => 1,
             'currency'=>"USD",
             'referal' => trim($data['ref']),
             'reg_date' => date('d-m-Y'),      

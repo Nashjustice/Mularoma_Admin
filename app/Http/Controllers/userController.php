@@ -247,59 +247,64 @@ class userController extends Controller
             'toast_type' => 'err'
         ]);
     }
+    
+      if(Auth::attempt(['email' => $req['email'], 'password' => $req['password']])) {
 
-    try
-    {
-      if(Auth::attempt(['email' => $req['email'], 'password' => $req['password']])) 
-      {
+          return redirect()->to('/');
+      }
+
+    // try
+    // {
+    //   if(Auth::attempt(['email' => $req['email'], 'password' => $req['password']])) 
+    //   {
           
-          exit();
-        $user = Auth::User();
-        if($user->status == 0 || $user->status == 'New' || $user->status == 'pending')
-        {
-            Session::flush();
-            Session::put('err_msg', 'Account not activatedjjjj');
-          return '/pay';
-            //->withErrors(['msg', 'Account not activated']);             
-        }
-        if( $user->status == 'Blocked')
-        {
-            Session::flush();
-            Session::put('err_msg', 'Account Blocked! Please contact support.');
-            return redirect()->bacK(); 
-            //->withErrors(['msg', 'Account not activated']);             
-        }
+    //       exit();
+    //     $user = Auth::User();
+    //     if($user->status == 0 || $user->status == 'New' || $user->status == 'pending')
+    //     {
+    //         Session::flush();
+    //         Session::put('err_msg', 'Account not activatedjjjj');
+    //       return '/pay';
+    //         //->withErrors(['msg', 'Account not activated']);             
+    //     }
+    //     if( $user->status == 'Blocked')
+    //     {
+    //         Session::flush();
+    //         Session::put('err_msg', 'Account Blocked! Please contact support.');
+    //         return redirect()->bacK(); 
+    //         //->withErrors(['msg', 'Account not activated']);             
+    //     }
 
-        if($user->sec_2fa_status == 1)
-        {
-          Session::put('temp_login_email', $req['email']);
-          Session::put('temp_login_pwd', $req['password']);
-          Session::put('temp_2fa_key', $user->sec_2fa);
+    //     if($user->sec_2fa_status == 1)
+    //     {
+    //       Session::put('temp_login_email', $req['email']);
+    //       Session::put('temp_login_pwd', $req['password']);
+    //       Session::put('temp_2fa_key', $user->sec_2fa);
 
-          Auth::logout();
-          return view('user.enter_otp');
-        }
-        else
-        {
-          $act = new activities;
-          $act->action = "User logged in to account";
-          $act->user_id = $user->id;
-          $act->save(); 
-        //   return redirect('/'.$user->username.'/dashboard');
-        }          
-      }          
-      return redirect()->route('login')->with([
-        'toast_msg' => 'User credentials not correct!',
-        'toast_type' => 'err'
-      ]);        
-    }
-    catch(\Exception $e)
-    {      
-      return back()->with([
-        'toast_msg' => $e->getMessage(),
-        'toast_type' => 'err'
-      ]);
-    }
+    //       Auth::logout();
+    //       return view('user.enter_otp');
+    //     }
+    //     else
+    //     {
+    //       $act = new activities;
+    //       $act->action = "User logged in to account";
+    //       $act->user_id = $user->id;
+    //       $act->save(); 
+    //     //   return redirect('/'.$user->username.'/dashboard');
+    //     }          
+    //   }          
+    //   return redirect()->route('login')->with([
+    //     'toast_msg' => 'User credentials not correct!',
+    //     'toast_type' => 'err'
+    //   ]);        
+    // }
+    // catch(\Exception $e)
+    // {      
+    //   return back()->with([
+    //     'toast_msg' => $e->getMessage(),
+    //     'toast_type' => 'err'
+    //   ]);
+    // }
   }
 
   public function verify_u2s(Request $req)

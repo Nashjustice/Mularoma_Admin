@@ -19,29 +19,26 @@
                   <table class="table table-hover mb-0 text-md-nowrap">
                     <thead>
                       <tr>
-                         <th class="wd-lg-25p">Type</th>
-                        <th class="wd-lg-25p">Transaction code</th>
-                        <th class="wd-lg-25p tx-right">amount</th>
-                        <th class="wd-lg-25p tx-right">account</th>
-                        <th class="wd-lg-25p tx-right">Time</th>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Transaction code</th>
+                        <th>Phone number</th>
+                        <th>Amount</th>
+                        <th>Date</th>
                         
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach($depos as $depo)
+                      @foreach($deposits as $deposit)
                       <tr>
-                          
-                         <td>{{$depo->TransactionType}}</td>
-                        <td>{{$depo->TransID}}</td>
-                        <td class="tx-right tx-medium tx-inverse">{{$depo->TransAmount}}</td>
-                        <td class="tx-right tx-medium tx-inverse">{{$depo->BillRefNumber}}</td>
-                        <td class="tx-right tx-medium tx-inverse">{{$user->created_at}}</td>
-                        
-                        
-                       
-                       
-                      </tr>
+                        <td>{{$deposit->id}}</td>
+                        <td>{{App\User::find($deposit->user_id)->username}}</td>
+                        <td>{{$deposit->receipt_number}}</td>
+                        <td>{{$deposit->phone_number}}</td>
+                        <td>{{$deposit->amount}}</tdmount>
+                        <td>{{$deposit->created_at}}</td>
 
+                      </tr>
                       @endforeach
                       
                     </tbody>

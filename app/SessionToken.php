@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Activations extends Model
+class SessionToken extends Model
 {
-    protected $table="activations";
+    protected $table="sessions";
 }

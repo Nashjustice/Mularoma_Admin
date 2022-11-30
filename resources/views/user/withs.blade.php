@@ -19,41 +19,28 @@
                   <table class="table table-hover mb-0 text-md-nowrap">
                     <thead>
                       <tr>
-                         <th class="wd-lg-25p">User</th>
-                        <th class="wd-lg-25p">Source</th>
-                        <th class="wd-lg-25p tx-right">Destination</th>
-                        <th class="wd-lg-25p tx-right">Amount</th>
-                        <th class="wd-lg-25p tx-right">MPESA CODE</th>
-                        <th class="wd-lg-25p tx-right">Created at</th>
-                        <th class="wd-lg-25p tx-right">Status</th>
-                        
-                       
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Transaction code</th>
+                        <th>Type</th>
+                        <th>Phone number</th>
+                        <th>Amount</th>
+                        <th>Date</th>
                         
                       </tr>
                     </thead>
                     <tbody>
                       @foreach($withs as $with)
                       <tr>
-                          
-                         <td><?php $users=App\User::where('id',$with->user_id)->get('username');
-                        
-                        foreach($users as $user){
-                            echo $user->username;
-                        }     
-                         ?></td>
-                        
-                        <td class="tx-right tx-medium tx-inverse">{{$with->source}}</td>
-                        <td class="tx-right tx-medium tx-inverse">{{$with->destination}}</td>
-                        <td class="tx-right tx-medium tx-inverse">{{$with->amount}}</td>
-                        <td class="tx-right tx-medium tx-inverse">{{$with->code}}</td>
-                        <td class="tx-right tx-medium tx-inverse">{{$with->created_at}}</td>
-                        <td class="tx-right tx-medium tx-inverse"><button class="btn btn-success">Success</button></td>
-                        
-                        
-                       
-                       
-                      </tr>
+                        <td>{{$with->id}}</td>
+                        <td>{{App\User::find($with->user_id)->username}}</td>
+                        <td>{{$with->receipt_number}}</td>
+                        <td>{{$with->type}}</td>
+                        <td>{{$with->phone_number}}</td>
+                        <td>{{$with->amount}}</tdmount>
+                        <td>{{$with->created_at}}</td>
 
+                      </tr>
                       @endforeach
                       
                     </tbody>
