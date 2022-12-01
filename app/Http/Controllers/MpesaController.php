@@ -9,6 +9,9 @@ use App\MpesaTransaction;
 use Auth;
 use App\User;
 use App\Wallet;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\Deposit;
+use App\Notifications\Activation;
 
 class MpesaController extends Controller
 {    
@@ -360,12 +363,16 @@ class MpesaController extends Controller
             $transaction->status = "sent";
             $transaction->save();
             
+            Notification::send(Auth::user()->email, new Deposit());
+            
             $checkActivation = MpesaTransaction::where('user_id',Auth::user()->id)->first();
             $user = User::find(Auth::user()->id);
 
             if($checkActivation->amount == 100 && $user->activation_status == null){
               $user->activation_status = 1;
+              $user->activated_by = 1;
               $user->save();
+              Notification::send(Auth::user()->email, new Activation());
             }
             
             return redirect('/'.Auth::user()->username.'/dashboard');

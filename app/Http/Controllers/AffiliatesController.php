@@ -21,7 +21,11 @@ use Hackdelta\Mpesa\Extras\MpesaConstants;
 use Hackdelta\Mpesa\Exceptions\MpesaInternalException;
 use Hackdelta\Mpesa\Exceptions\MpesaClientExceptions;
 use Hackdelta\Mpesa\Exceptions\MpesaServerException;
+use Illuminate\Support\Facades\Session;
+use App\Wallet;
+use App\Charge;
 use App\MpesaTransaction;
+use Illuminate\Support\Str;
 
 class AffiliatesController extends Controller
 {
@@ -571,113 +575,118 @@ class AffiliatesController extends Controller
  
  public function withdrawinv(Request $request){
      
-     //check the amount user has left
-     $amount=$request->amount;
-     $today = new Carbon();
+     $withdrawalAmount = $request->amount;
+     $wallet = Wallet::where('user_id', Auth::user()->id)->get();
+     $tokenBalance = $wallet[0]->token;
+     $mainWallet = $wallet[0]->main;
      
-     $balance=Investments::where('user_id',Auth::user()->id)->sum('earnings');
-     
-     if($balance>=env('inv_min')){
-         
-         if($amount>=env('inv_min')){
-            if((($today->dayOfWeek == Carbon::SATURDAY) || ($today->dayOfWeek == Carbon::SUNDAY))){
-              //add this amount on the earnings table
-            $inv=new Investments();
-
-  			$inv->user_id=Auth::user()->id;
-
-  			$inv->package_id=1;
-
-  			$inv->capital=0;
-
-  			
-
-  			$inv->daily=0;
-
-  			$inv->earnings=-$amount;
-
-  			$inv->status=2;
-  			
-  			$inv->save();
-  			
-  			//add this amount to the users table
-  			$user=User::where('id',Auth::user()->id)->first();
-  			
-  			
-  			
-  			$balance=$user->wallet+$amount;
-  			
-  			$user->update(['wallet'=>$balance]);
-  			
-  			 $w=new Withdraw();
-             $w->user_id=Auth::user()->id;
-             $w->amount=$amount;
-             $w->source="investments";
-             $w->destination="wallet";
-             $w->status=1;
-  			$w->save();
-  			
-  			 Mail::to(Auth::user()->email)->send(new Withdrawal(Auth::user()->username,$amount,"Investments","Wallet"));
-  			 return redirect()->back()->with('success', 'Amount was added to balance!');
-              
-          }else{
-              return redirect()->back()->with('error', 'Please withdraw Investment Earnings on Saturday or Sunday');
-          }
-         }else{
-             return redirect()->back()->with('error', 'Minimum withdrawal should be '.env('inv_min'));
-         }
-         //check for the day it is today
-          
-     }else{
-         return redirect()->back()->with('error', 'Not enough balance to withdraw!');
+     if($tokenBalance < 2000){
+        Session::flash('error','Insufficient token balance! You should have more than Ksh.2000');
+        return redirect()->back(); 
      }
      
-    //  return $balance;
+     $charges = 0;
+      
+     if($withdrawalAmount >= 200 && $withdrawalAmount <= 999){
+       $charges = 23;  
+     }elseif($withdrawalAmount >= 1000 && $withdrawalAmount <= 2499){
+       $charges = 35;  
+     }elseif($withdrawalAmount >= 2500 && $withdrawalAmount <= 4999){
+       $charges = 56;  
+     }elseif($withdrawalAmount >= 5000 && $withdrawalAmount <= 9999){
+       $charges = 85;  
+     }elseif($withdrawalAmount >= 10000 && $withdrawalAmount <= 29999){
+       $charges = 112;  
+     }
+     elseif($withdrawalAmount >= 30000 && $withdrawalAmount <= 39999){
+       $charges = 202;  
+     }
+     elseif($withdrawalAmount >= 40000 && $withdrawalAmount <= 50000){
+       $charges = 250;  
+     }
+  
+     $afterTransactionCharge = $withdrawalAmount - $charges; 
+     $newTokenBalance = $tokenBalance - $withdrawalAmount;
+     $newMainBalance = $mainWallet +  $afterTransactionCharge;
+     
+     $transaction = new MpesaTransaction;
+     $transaction->user_id = Auth::user()->id;
+     $transaction->type = "TokenToWallet";
+     $transaction->amount = $request->amount;
+     $transaction->receipt_number = 'MT'.Str::random(8);
+     $transaction->transaction_date = date('Y-m-d H:i:s');
+     $transaction->phone_number = Auth::user()->phone;
+     $transaction->status = "done";
+     $transaction->save(); 
+     
+     $charge = new Charge;
+     $charge->amount = $charges;
+     $charge->save();
      
      
+     
+     $user = Wallet::find($wallet[0]->id);
+     $user->token = $newTokenBalance;
+     $user->main = $newMainBalance;
+     
+     if($user->save()){
+         Session::flash('Success','KSH.'.$withdrawalAmount.' moved to main wallet! Transaction cost is Ksh.'.$charges);
+         
+         return redirect()->back();
+     }  
  }
  
  public function withdrawref(Request $request){
+     $withdrawalAmount = $request->amount;
+     $wallet = Wallet::where('user_id', Auth::user()->id)->get();
+     $refBalance = $wallet[0]->referal;
+     $mainWallet = $wallet[0]->main;
      
-     $amount=$request->amount;
-     //check if the balance is greater than 500
+     if($refBalance < 200){
+        Session::flash('error','Insufficient referal balance! You should have more than Ksh.200');
+        return redirect()->back(); 
+     }
      
-     $balance=Auth::user()->ref_bal;
-     $wallet=Auth::user()->wallet;
+     $charges = 0;
+      
+     if($withdrawalAmount >= 200 && $withdrawalAmount <= 999){
+       $charges = 23;  
+     }elseif($withdrawalAmount >= 1000 && $withdrawalAmount <= 2499){
+       $charges = 35;  
+     }elseif($withdrawalAmount >= 2500 && $withdrawalAmount <= 4999){
+       $charges = 56;  
+     }elseif($withdrawalAmount >= 5000 && $withdrawalAmount <= 9999){
+       $charges = 85;  
+     }elseif($withdrawalAmount >= 10000 && $withdrawalAmount <= 30000){
+       $charges = 112;  
+     }
+  
+     $afterTransactionCharge = $withdrawalAmount - $charges; 
+     $newRefBalance = $refBalance - $withdrawalAmount;
+     $newMainBalance = $mainWallet +  $afterTransactionCharge;
      
-     if($balance>=env('ref_min')){
-         //deduct this amount and credit to the user
-         if($amount>=env('ref_min')){
-             if($amount <=$balance){
-             
-             //credit wallet
-             
-             $new_balance=$balance-$amount;
-             $new_wallet=$wallet+$amount;
-             //GET THIS USERS Wallet balance
-             
-             $update=User::where('id',Auth::user()->id)->update(['ref_bal'=>$new_balance,'wallet'=>$new_wallet]);
-              $w=new Withdraw();
-             $w->user_id=Auth::user()->id;
-             $w->amount=$amount;
-             $w->source="referals";
-             $w->destination="wallet";
-             $w->status=1;
-             $w->save();
-              Mail::to(Auth::user()->email)->send(new Withdrawal(Auth::user()->username,$amount,"Referals","Wallet"));
-             return redirect()->back()->with('success', 'Amount was added to balance!');
-             
-             
-         }else{
-             return redirect()->back()->with('error', 'Amount is greater than balance!');
-         }
-         }else{
-              return redirect()->back()->with('error', 'The minimum you can transfer is '.env('ref_min'));
-         }
-         //check if the amount is available
+     $transaction = new MpesaTransaction;
+     $transaction->user_id = Auth::user()->id;
+     $transaction->type = "ReferalToWallet";
+     $transaction->amount = $request->amount;
+     $transaction->receipt_number = 'MT'.Str::random(8);
+     $transaction->transaction_date = date('Y-m-d H:i:s');
+     $transaction->phone_number = Auth::user()->phone;
+     $transaction->status = "done";
+     $transaction->save();
+     
+     $user = Wallet::find($wallet[0]->id);
+     $user->referal = $newRefBalance;
+     $user->main = $newMainBalance;
+     
+     $charge = new Charge;
+     $charge->amount = $charges;
+     $charge->save();
+     
+     if($user->save()){
+         Session::flash('Success','KSH.'.$withdrawalAmount.' moved to main wallet!. Transaction cost Ksh.'.$charges);
          
-     }else{
-         return redirect()->back()->with('error', 'You have less balance to withdraw');
+         return redirect()->back();
      }
      
  }

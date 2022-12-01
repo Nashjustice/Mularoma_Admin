@@ -153,6 +153,7 @@ Route::get('/pay-for-client', 'AffiliatesController@payforclient')->middleware('
 
 Route::post('/paypost', 'AffiliatesController@pay')->middleware('auth');
 
+Route::post('/invest/token', 'InvestmentController@buyToken')->middleware('auth');
 
 Route::post('/pay', function () {
  return view('pay');
