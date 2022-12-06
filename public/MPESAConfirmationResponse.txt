@@ -1,1 +1,1 @@
-{"Result":{"ResultType":0,"ResultCode":21,"ResultDesc":"The initiator is not allowed to initiate this request.","OriginatorConversationID":"32580-40977800-1","ConversationID":"AG_20221201_206075f895a742682251","TransactionID":"QL181MUL7M","ReferenceData":{"ReferenceItem":{"Key":"QueueTimeoutURL","Value":"http:\/\/internalapi.safaricom.co.ke\/mpesa\/b2cresults\/v1\/submit"}}}}
+{"Body":{"stkCallback":{"MerchantRequestID":"8501-57089942-1","CheckoutRequestID":"ws_CO_06122022155908214758346886","ResultCode":1032,"ResultDesc":"Request cancelled by user"}}}

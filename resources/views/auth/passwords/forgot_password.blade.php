@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,7 +11,7 @@
         <meta name="Keywords" content="admin,admin dashboard,admin dashboard template,admin panel template,admin template,admin theme,bootstrap 4 admin template,bootstrap 4 dashboard,bootstrap admin,bootstrap admin dashboard,bootstrap admin panel,bootstrap admin template,bootstrap admin theme,bootstrap dashboard,bootstrap form template,bootstrap panel,bootstrap ui kit,dashboard bootstrap 4,dashboard design,dashboard html,dashboard template,dashboard ui kit,envato templates,flat ui,html,html and css templates,html dashboard template,html5,jquery html,premium,premium quality,sidebar bootstrap 4,template admin bootstrap 4"/>
 
         <!-- Title -->
-        <title> Mulatoken - Login</title>
+        <title> Mulatoken - Forgot password</title>
 
         <!-- Favicon -->
         <link rel="icon" href="{{ asset('img/logo_icon.svg')}}" type="image/x-icon"/>
@@ -40,14 +41,6 @@
 
         <!--- Animations css-->
         <link href="{{ asset('assetss/css/animate.css')}}" rel="stylesheet">
-        
-        <style>
-            @media screen and (max-width: 480px) {
-              .login-image {
-                display: none;
-              }
-            }
-        </style>
 
     </head>
     <body class="error-page1 main-body bg-light text-dark">
@@ -64,11 +57,9 @@
             <div class="container-fluid">
                 <div class="row no-gutter">
                     <!-- The image half -->
-                   <div class="col-md-7 col-lg-7 col-xl-7 login-image" style="background: linear-gradient( rgba(0,0,0,0.4), rgba(0, 0, 0, 0.4) ), url('https://tradervn.net/wp-content/uploads/2021/08/forex-la-gi-1024x571.jpg'); background-position: center;">
-                        <!--<img src="{{asset('images/login.jpg')}}" alt="Image" style="height:100vh;"/>-->
-                    </div>
+                   
                     <!-- The content half -->
-                    <div class="col-md-5 col-lg-5 col-xl-5 bg-white">
+                    <div class="col-md-12 col-lg-12 col-xl-12 bg-white">
                         <div class="login d-flex align-items-center py-2">
                             <!-- Demo content-->
                             <div class="container p-0">
@@ -78,7 +69,7 @@
                                     <div class="col-md-10 col-lg-10 col-xl-9 mx-auto">
                                          <img src="{{asset('img/logo.svg')}}" width="200" height="200">
                                         <div class="card-sigin">
-                                            <div class=" d-flex">
+                                            <div class="mb-5 d-flex">
                                                 <a href="">
                                                
                                                 </a>
@@ -86,66 +77,40 @@
                                               
                                             </div>
                                             <div class="card-sigin">
-                                               <div class="alert alert-success" >For any assistance please contact the admin via WhatsApp {{env('SUPPORT_LINE')}} </div>
                                                 
                                                 <div class="main-signup-header">
-                                                    <h2>Welcome back!</h2>
-                                                    <h5 class="fw-semibold mb-4">Please sign in to continue.</h5>
-                                                    <form method="POST" action="{{ route('session_sa.upload_u2s') }}">
-                                                        @csrf
-                                                        @if(Session::has('err_msg'))
+                                                    <h2>Password Recovery!</h2>
+                                                    <h5 class="fw-semibold mb-4">Recover your password</h5>
+                                                    
+                                                    @if(Session::has('error'))
                                                     <div class="alert alert-danger">
+                                                        {{Session::get('error')}}
+                                                    </div>
+                                                    @endif
+                                                    
+                                                    @if(Session::has('Success'))
+                                                    <div class="alert alert-success">
+                                                        {{Session::get('Success')}}
+                                                    </div>
+                                                    @endif
+                                                    
+                                                    <form method="POST" action="/verify/email/forgot_password">
                                                         
-                                                        {{Session::get('err_msg')}}
-                                                       
-                                                            </div>
-                                                             {{Session::forget('err_msg')}}
-                                                        @endif
-
-                                                        @if(Session::has('regMsg'))
-                                                            <div class="alert alert-success" >
-                                                                {{Session::get('regMsg')}}
-                                                            </div>
-                                                             {{Session::forget('regMsg')}}
-                                                        @endif                                                
+                                                        @csrf
                                                 
                                                         <div class="form-group">
-                                                            <label>Email</label> <input class="form-control"  type="text" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="E-Mail Address">
+                                                            <label>Email</label>
+                                                            <input class="form-control"  type="text" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="E-Mail Address">
 
-                                                            @error('email')
-                                                            <span class="invalid-feedback" role="alert alert-danger" >
-                                                                {{ $message }}
-                                                            </span>
-                                                            @enderror
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label>Password</label> <input class="form-control" name="password" required autocomplete="current-password" placeholder="Password" type="password">
-                                                            @error('password')
-                                                            <span class="invalid-feedback" role="alert alert-danger" >
-                                                                {{ $message }}
-                                                            </span>
-                                                        @enderror
                                                     
-                                                        </div><button class="btn btn-main-primary btn-block">Sign In</button>
+                                                    
+                                                        </div><button class="btn btn-main-primary btn-block">Recover password</button>
+                                                        
+                                                        <a href="/login">Back to login</a>
                                                       
                                                     </form>
-                                                    <div class="main-signin-footer d-flex justify-content-between">
-                                                       @if (Route::has('password.request'))
-                                                            <a class="btn btn-link text-danger" href="{{ url('forgot/password') }}">
-                                                                {{ __('Forgot Your Password?') }}
-                                                            </a>
-                                                        @endif
-                                                        <a class="btn btn-link " href="/register">
-                                                            {{ __('Not a Member ?') }}
-                                                        </a>
-                                                    </div>
-                                                    <!--<div class="main-signin-footer mt-5">-->
-                                                       
-                                                    <!--        <a class="btn btn-link " href="/register">-->
-                                                    <!--            {{ __('Not a Member ?') }}-->
-                                                    <!--        </a>-->
-                                                        
-                                                    <!--</div>-->
+                                                  
                                                 </div>
                                             </div>
                                         </div>
@@ -191,4 +156,6 @@
 
     </body>
 </html>
+
+
 

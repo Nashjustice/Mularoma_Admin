@@ -32,7 +32,7 @@ class LoginMailNot extends Mailable
     public function build()
     {
         return $this
-        ->from('info@elshadaigtinvestment.org','Login Notification')
+        ->from('info@mulatoken.co.ke','Login Notification')
         ->markdown('emails.login');
     }
 }

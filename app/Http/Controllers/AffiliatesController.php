@@ -905,17 +905,16 @@ class AffiliatesController extends Controller
     {
     	# get my ref body
     	 $refs=User::where('referal',Auth::user()->username)->get();
-
-
     	 //Level two
     	 $level_twos=array();
     	 $level_threes=array();
     	 $level_4s=array();
 
     	 foreach ($refs as $ref) {
-    	 	# code...
+    	 	
+            
     	 	$level_twos=User::where('referal',$ref->username)->get();
-
+                # code...
     	 	foreach ($level_twos as $level_two) {
     	 		# code...
     	 			$level_threes=User::where('referal',$level_two->username)->get();

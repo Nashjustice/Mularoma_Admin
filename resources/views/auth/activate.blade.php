@@ -130,11 +130,11 @@
                                                 @elseif((Auth::user()->country)=='TANZANIA')
                                                 
                                                 <div class="alert alert-success" >
-                                                   <p>-using vodacom <br>
+                                                   <p>-using VODACOM<br>
                                                     -Dial *150*00#<br>
-                                                    -send TSH 12,500 to mpesa Kenya on your vodacom line<br>
-                                                    -phone number +254703854853 NAHAMAN KAVYATI MUSOMBA </p>
-                                                    <a href="https://wa.link/yfvtbd">Click here If you made payment</a>
+                                                    -send TSH 2857 to mpesa Kenya on your vodacom line<br>
+                                                    -phone number +254790532720 NABOTH MUSOMBA </p>
+                                                    <a href="https://api.whatsapp.com/send?phone=254110279668&text=Hi+here+is+my+screenshot%F0%9F%91%87%F0%9F%8F%BD+">Click here If you made payment</a>
                                                  </div>
                                                  
                                                   <input type="hidden" value="{{env('au')}}" id="au">
@@ -148,8 +148,8 @@
                                                 <div class="alert alert-success" >
                                                    <p>-using MTN <br>
                                                     -Dial *830#<br>
-                                                    -send RWF 5000 to mpesa Kenya on your MTN line<br>
-                                                    -phone number +254703854853 NAHAMAN KAVYATI MUSOMBA </p>
+                                                    -send RWF 1326 to mpesa Kenya on your MTN line<br>
+                                                    -phone number +254790532720 NABOTH MUSOMBA </p>
                                                     <a href="https://wa.link/yfvtbd">Click here If you made payment</a>
                                                  </div>
                                                  
@@ -163,8 +163,8 @@
                                                 <div class="alert alert-success" >
                                                    <p>-using MTN <br>
                                                     -Dial *165#<br>
-                                                    -send USH 22,500 to mpesa Kenya on your MTN line<br>
-                                                    -phone number +254703854853 NAHAMAN KAVYATI MUSOMBA </p>
+                                                    -send USH 4570 to mpesa Kenya on your MTN line<br>
+                                                    -phone number +254790532720 NABOTH MUSOMBA </p>
                                                     
                                                     <a href="https://wa.link/yfvtbd">Click here If you made payment</a>
                                                  </div>

@@ -4,7 +4,7 @@ use App\Http\Controllers\MpesaController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\InvestController;
 use App\Http\Controllers\Auth\LoginController;
-
+use App\Http\Controllers\PasswordController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -310,7 +310,11 @@ Route::post('/user/add/btc_wallet', 'userController@addBtcWallet')->middleware('
 
 Route::post('/user/request/change/pwd', 'userController@user_req_pwd');
 
+Route::get('forgot/password', function(){
+    return view('auth.passwords.forgot_password');
+});
 
+Route::post('/verify/email/forgot_password', 'PasswordController@verifyEmail');
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////  admin /////////////////////////////////////////////////////////////////////
 

@@ -12,6 +12,7 @@ use App\Wallet;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Deposit;
 use App\Notifications\Activation;
+use File;
 
 class MpesaController extends Controller
 {    
@@ -163,7 +164,7 @@ class MpesaController extends Controller
            return redirect()->back();
         }
         $curl = curl_init();
-
+        
         curl_setopt_array($curl, array(
           CURLOPT_URL => env('MPESA_BASE_URL').'/mpesa/b2c/v1/paymentrequest',
           CURLOPT_RETURNTRANSFER => true,
@@ -244,7 +245,9 @@ class MpesaController extends Controller
         curl_close($curl);
         
         if($response->ResponseCode == "0"){
-            return redirect()->to('/confirm_payment');
+            //return redirect()->to('/confirm_payment');
+            Session::flash('Success','Processing payment....'); 
+           return redirect()->back();
         }
         else{
            Session::flash('error','If you are not prompted to automatically enter Mpesa PIN, use paybill 4096217, Account Number: act#'.Auth::user()->id); 
@@ -333,6 +336,60 @@ class MpesaController extends Controller
         fwrite($log, $mpesaResponse);
         fclose($log);
         
+        //reading from txt file
+        //$file = file_get_contents("MPESAConfirmationResponse.txt");
+        $ch = curl_init();
+        $path = public_path('MPESAConfirmationResponse.txt');
+        curl_setopt($ch, CURLOPT_URL, $path);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $file = curl_exec($ch);
+        curl_close($ch);
+        $file2 = json_decode($file, true);
+        $stkCallBack = json_encode($file2['Body']['stkCallback']);
+        $callBackData = json_decode($stkCallBack,true);
+        $ResultCode = json_encode($file2['Body']['stkCallback']['ResultCode']);
+        
+        if($ResultCode == 0){
+            //get user details data in CallbackMetadata
+            $CallbackMetadata = json_encode($callBackData['CallbackMetadata']['Item']);
+            $data = json_decode($CallbackMetadata,true);
+            $Amount = json_encode($data[0]['Value']);
+            $MpesaReceiptNumber = json_encode($data[1]['Value']);
+            $TransactionDate = json_encode($data[3]['Value']);
+            $PhoneNumber = json_encode($data[4]['Value']);
+
+            //save to MPESA transactions table    
+            $transaction = new MpesaTransaction;
+            $transaction->user_id = Auth::user()->id;
+            $transaction->type = "Deposit";
+            $transaction->amount = $Amount;
+            $transaction->receipt_number = str_replace(['"',"'"], "", $MpesaReceiptNumber);
+            $transaction->transaction_date = $TransactionDate;
+            $transaction->phone_number = $PhoneNumber;
+            $transaction->status = "sent";
+            $transaction->save();
+            
+            //Notification::send(Auth::user()->email, new Deposit());
+            //Notification::route('mail', Auth::user()->email)->notify(new Deposit(Auth::user()->email));
+            
+            $checkActivation = MpesaTransaction::where('user_id',Auth::user()->id)->first();
+            $user = User::find(Auth::user()->id);
+
+            if($checkActivation->amount == 100 && $user->activation_status == null){
+              $user->activation_status = 1;
+              $user->activated_by = 1;
+              $user->save();
+              //Notification::send(Auth::user()->email, new Activation());
+              return redirect('/'.Auth::user()->username.'/dashboard');
+            }
+            
+            return redirect('/'.Auth::user()->username.'/dashboard');
+
+        } else{
+           Session::flash('error','Payment did not go through');
+           return redirect()->back();
+        }
+        
      }
      
     public function store(){
@@ -363,7 +420,8 @@ class MpesaController extends Controller
             $transaction->status = "sent";
             $transaction->save();
             
-            Notification::send(Auth::user()->email, new Deposit());
+            //Notification::send(Auth::user()->email, new Deposit());
+            //Notification::route('mail', Auth::user()->email)->notify(new Deposit(Auth::user()->email));
             
             $checkActivation = MpesaTransaction::where('user_id',Auth::user()->id)->first();
             $user = User::find(Auth::user()->id);
@@ -372,7 +430,7 @@ class MpesaController extends Controller
               $user->activation_status = 1;
               $user->activated_by = 1;
               $user->save();
-              Notification::send(Auth::user()->email, new Activation());
+              //Notification::send(Auth::user()->email, new Activation());
             }
             
             return redirect('/'.Auth::user()->username.'/dashboard');

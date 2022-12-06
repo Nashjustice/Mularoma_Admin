@@ -14,16 +14,16 @@ class PasswordResetNotification extends Notification
      *
      * @var string
      */
-    private $mailData;
+    public $token;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($mailData)
+    public function __construct($token)
     {
-        $this->mailData = $mailData;
+        $this->token = $token;
     }
 
     /**
@@ -47,7 +47,7 @@ class PasswordResetNotification extends Notification
     {
         return (new MailMessage)
             ->line('You are receiving this email because we received a password reset request for your account.') // Here are the lines you can safely override
-            ->action('Reset Password', url('password/reset', $this->$mailData['token']))
+            ->action('Reset Password', url('password/reset', $this->token))
             ->line('If you did not request a password reset, no further action is required.');
     }
 

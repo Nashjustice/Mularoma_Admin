@@ -27,7 +27,7 @@
 							<form class="form-horizontal" action="{{url('ref/withdraw')}}" method="post">
 								@csrf
 								<div class="form-group">
-									<input type="number" class="form-control" name="amount" placeholder="amount" min="200" required>
+									<input type="number" class="form-control" name="amount" placeholder="amount" required>
 								</div>
 								
 								

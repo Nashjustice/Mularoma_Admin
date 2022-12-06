@@ -29,10 +29,10 @@
                         <td>{{$ref->username}}</td>
                         <td class="tx-right tx-medium tx-inverse">{{$ref->phone}}</td>
                         <td class="tx-right tx-medium tx-inverse">
-                        @if(($ref->status)==1)
+                        @if(($ref->activation_status)==null)
                          <button class="btn btn-warning">Pending</button>
 
-                         @elseif(($ref->status)==2)
+                         @elseif(($ref->activation_status)==1)
 
                         <button class="btn btn-success">Active</button>
 

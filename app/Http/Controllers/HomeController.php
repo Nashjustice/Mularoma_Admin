@@ -69,6 +69,10 @@ class HomeController extends Controller
     {
         $cash = Wallet::where('user_id',Auth::user()->id)->first();
         
+        $zeroReferal = Wallet::where('user_id', Auth::user()->id)->first();
+        $zeroReferal->referal = 0;
+        $zeroReferal->save();
+        
         //count number of days since token was bought
         $models = TokenHistory::where('user_id', Auth::user()->id)->get();
         foreach($models as $model){
@@ -99,11 +103,6 @@ class HomeController extends Controller
         $cash->token = $actualBalance;
         $cash->save();
         
-        //Get different balances
-        $mainWallet = $cash->main;
-        $referalEarning = $cash->referal;
-        $tokenBalance= $cash->token;
-        
         //total withdrawal
         $toMpesaWithdraw = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','Withdraw')->sum('amount');
         $toTokenWallet = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','TokenToWallet')->sum('amount');
@@ -113,10 +112,58 @@ class HomeController extends Controller
         //actual deposit balance        
         $mainDeposit = MpesaTransaction::where('user_id', Auth::user()->id)->where('type', 'Deposit')->sum('amount');
         $activationFee = MpesaTransaction::where('user_id',Auth::user()->id)->where('amount', 100)->where('type', 'Deposit')->first();
-        $deposit = $mainDeposit - $activationFee->amount;
-        
+        if($activationFee == null){
+            $deposit = $mainDeposit - 0;
+        }
+        else{
+            $deposit = $mainDeposit - $activationFee->amount;
+        }
         $buyingTokens = MpesaTransaction::where('user_id', Auth::user()->id)->where('type', 'Invest')->sum('amount');
         $depositBalance = $deposit - $buyingTokens;
+        
+        $depositWallets = Wallet::where('user_id',Auth::user()->id)->get();
+        foreach($depositWallets as $depositWallet){
+            $depositWallet->deposited = $depositBalance;
+            $depositWallet->save();
+        }
+        
+         // referal earnings
+        $refs=User::where('referal',Auth::user()->username)->get();
+    	 //Level two
+    	 $level_twos=array();
+    	 $level_threes=array();
+    	 $level_4s=array();
+
+    	 foreach ($refs as $ref) {
+    	 	$wallet = Wallet::where('user_id',$ref->id)->first();
+            $bonus = $wallet->deposited * 0.1;
+            
+            $refereeWallet = Wallet::where('user_id', Auth::user()->id)->first();
+            $initialBonus = $refereeWallet->referal;
+            $newBonus = $initialBonus + $bonus;
+            $refereeWallet->referal = $newBonus;
+            $refereeWallet->save();
+            
+    	 	$level_twos=User::where('referal',$ref->username)->get();
+
+    	 	foreach ($level_twos as $level_two) {
+    	 		# code...
+    	 			$level_threes=User::where('referal',$level_two->username)->get();
+
+    	 			foreach ($level_threes as $level_three) {
+    	 				# code...
+    	 				 $level_4s=User::where('referal',$level_three->username)->get();
+
+    	 			}
+
+    	 	}
+
+    	 }
+    	 
+    	//Get different balances
+        $mainWallet = $cash->main;
+        $referalEarning = $cash->referal;
+        $tokenBalance= $cash->token;
      
          return view('user.index')->with(compact('tokenBalance','mainWallet', 'depositBalance', 'withdraw', 'referalEarning'));
     }

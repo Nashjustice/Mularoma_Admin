@@ -120,7 +120,7 @@ class RegisterController extends Controller
             return $user;
         }
         else{
-             return User::create([
+            $userData = [
             'firstname' => trim($data['Fname']),
             'lastname' => trim($data['Lname']),
             'phone' => trim($data['phone']),
@@ -135,7 +135,18 @@ class RegisterController extends Controller
             'currency'=>"USD",
             'referal' => trim($data['ref']),
             'reg_date' => date('d-m-Y'),      
-        ]);
+            ];
+        
+            $user = User::create($userData);
+            
+            Wallet::create([
+                'user_id' => $user->id,
+                'main' => 0,
+                'referal' => 0,
+                'token' => 0,
+            ]);
+            
+            return $user;
         }
         
       

@@ -15,8 +15,9 @@
                       <th scope="col">Capital</th>
                       <th scope="col">Percent Return</th>
                       <th scope="col">Profit expected</th>
-                      <th scope="col">Status</th>
+                      <th scope="col">Total profit</th>
                       <th scope="col">Days</th>
+                      <th scope="col">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,8 +28,9 @@
                     <td>{{$transaction->capital}}</td>
                     <td>{{$transaction->rate}}</td>
                     <td>{{$transaction->return_expected}}</td>
-                    <td><button class="btn btn-success" disabled>{{$transaction->status}}</button></td>
+                    <td>{{$transaction->total_profit}}</td>
                     <td >{{$transaction->days}}</td>
+                    <td><button class="btn btn-success" disabled>{{$transaction->status}}</button></td>
                 </tr>
                 @endforeach
             </tbody>
