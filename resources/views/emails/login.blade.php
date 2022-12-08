@@ -3,7 +3,7 @@ Hi {{$name}}
 
 You have successfully signed in to 
 
-https://elshadaigtinvestment.org
+https://mulatoken.co.ke
 
 from {{$server}}
 

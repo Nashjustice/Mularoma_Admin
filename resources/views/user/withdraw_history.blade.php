@@ -13,7 +13,6 @@
                      <tr>
                           <th scope="col">#</th>
                           <th scope="col">Type</th>
-                          <th scope="col">Receipt number</th>
                           <th scope="col">Amount</th>
                           <th scope="col">Phone number</th>
                           <th scope="col">Date</th>
@@ -24,7 +23,6 @@
                     <tr>
                         <th scope="row">{{$transaction->id}}</th>
                         <td>{{$transaction->type}}</td>
-                        <td>{{$transaction->receipt_number}}</td>
                         <td>{{$transaction->amount}}</td>
                         <td>{{$transaction->phone_number}}</td>
                         <td>{{$transaction->transaction_date}}</td>

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,10 +11,10 @@
         <meta name="Keywords" content="admin,admin dashboard,admin dashboard template,admin panel template,admin template,admin theme,bootstrap 4 admin template,bootstrap 4 dashboard,bootstrap admin,bootstrap admin dashboard,bootstrap admin panel,bootstrap admin template,bootstrap admin theme,bootstrap dashboard,bootstrap form template,bootstrap panel,bootstrap ui kit,dashboard bootstrap 4,dashboard design,dashboard html,dashboard template,dashboard ui kit,envato templates,flat ui,html,html and css templates,html dashboard template,html5,jquery html,premium,premium quality,sidebar bootstrap 4,template admin bootstrap 4"/>
 
         <!-- Title -->
-        <title> ELSHADAI GOLDEN TRADERS - Password reset</title>
+        <title> Mulatoken - Forgot password</title>
 
         <!-- Favicon -->
-        <link rel="icon" href="{{ asset('assetss/img/brand/favicon.png')}}" type="image/x-icon"/>
+        <link rel="icon" href="{{ asset('img/logo_icon.svg')}}" type="image/x-icon"/>
 
         <!-- Icons css -->
         <link href="{{ asset('assetss/css/icons.css')}}" rel="stylesheet">
@@ -66,7 +67,7 @@
                                 <div class="row">
                                       
                                     <div class="col-md-10 col-lg-10 col-xl-9 mx-auto">
-                                         <img src="https://elshadaigtinvestment.org/log.png" width="200" height="200">
+                                         <img src="{{asset('img/logo.svg')}}" width="200" height="200">
                                         <div class="card-sigin">
                                             <div class="mb-5 d-flex">
                                                 <a href="">
@@ -78,90 +79,50 @@
                                             <div class="card-sigin">
                                                 
                                                 <div class="main-signup-header">
-                                                    <h2>Reset password</h2>
-                                                    <h5 class="fw-semibold mb-4">Please sign in to continue.</h5>
-                                                     @if(Session::has('msgType') && Session::get('msgType') == 'err')                                
-                                    <div class="alert alert-danger">
-                                        {{Session::get('status')}}
-                                    </div>
-                                    {{Session::forget('msgType')}}
-                                    {{Session::forget('status')}}
-                                     
-                                @endif
-                           
-                                @if(Session::has('pwd_rst_suc'))
-                                    <div class="alert alert-success">
-                                        {{Session::get('status')}}
-                                    </div>
-                                    {{Session::forget('msgType')}}
-                                    {{Session::forget('status')}}
-                                    {{Session::forget('pwd_rst_suc')}}
-                                    
-                                @elseif(Session::has('pwd_reset_err'))
-                                    <div class="alert alert-danger">
-                                        {{Session::get('pwd_reset_err')}}
-                                    </div>
-                                    {{Session::forget('pwd_reset_err')}}
-                                    <br><br><br>
-                                @else
-                                    
-                                                  <form method="POST" action="/user/update/pwd">
-                                                      @csrf
+                                                    <h2>Password Recovery!</h2>
+                                                    <h5 class="fw-semibold mb-4">Reset your password</h5>
                                                     
-                                                        @if(Session::has('err_msg'))
+                                                    @if(Session::has('error'))
                                                     <div class="alert alert-danger">
+                                                        {{Session::get('error')}}
+                                                    </div>
+                                                    @endif
+                                                    
+                                                    @if(Session::has('Success'))
+                                                    <div class="alert alert-success">
+                                                        {{Session::get('Success')}}
+                                                    </div>
+                                                    @endif
+                                                    
+                                                    <form method="POST" action="/reseting/password">
                                                         
-                                                        {{Session::get('err_msg')}}
-                                                       
-                                                            </div>
-                                                             {{Session::forget('err_msg')}}
-                                                        @endif
-
-                                                        @if(Session::has('regMsg'))
-                                                            <div class="alert alert-success" >
-                                                                {{Session::get('regMsg')}}
-                                                            </div>
-                                                             {{Session::forget('regMsg')}}
-                                                        @endif                                                
+                                                        @csrf
+                                                        
+                                                        <div class="form-group">
+                                                            <label>Email</label>
+                                                            <input class="form-control"  type="email" name="email" value="{{ old('email') }}" required  autofocus>
+                                                        </div>
                                                 
+                                                        <div class="form-group">
+                                                            <label>Password</label>
+                                                            <input class="form-control"  type="password" name="password" value="{{ old('password') }}" required  autofocus>
+                                                        </div>
                                                     
                                                         <div class="form-group">
-                                                            <label for="password" class=" col-form-label text-md-right">{{ __('New Password') }}</label>
-                                            <input id="password" type="password" class="regTxtBox @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-    
-                                            @error('password')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                                    
+                                                            <label>Confirm Password</label>
+                                                            <input class="form-control"  type="password" name="confirm_password" value="{{ old('confirm_password') }}" required autofocus>
                                                         </div>
                                                         
-                                                         <div class="form-group">
-                                                            <label for="password-confirm" class=" col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-                                            <input id="password-confirm" type="password" class="regTxtBox" name="c_pwd" required autocomplete="new-password">
-                                                    
-                                                        </div>
+                                                        </div><button class="btn btn-main-primary btn-block">Recover password</button>
                                                         
-                                                        
-                                                        <button type="submit" class="btn btn-main-primary btn-block">Submit</button>
+                                                        <a href="/login">Back to login</a>
                                                       
                                                     </form>
-                                                    
-                                                    
-                                                    
-                                                    
-                                                    @endif
-                                                   
+                                                  
                                                 </div>
                                             </div>
-                                        
-                                         <a href="/login">Login</a>
                                         </div>
-                                        
-                                       
                                     </div>
-                                    
                                 </div>
                             </div><!-- End -->
                         </div>
@@ -203,7 +164,6 @@
 
     </body>
 </html>
-
 
 
 

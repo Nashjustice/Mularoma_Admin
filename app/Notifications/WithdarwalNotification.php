@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Auth;
 
-class Deposit extends Notification
+class WithdrawalNotification extends Notification
 {
     use Queueable;
 

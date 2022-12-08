@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\Deposit;
 use App\Notifications\Activation;
 use File;
+use Illuminate\Support\Str;
+use App\Notifications\DepositNotification;
 
 class MpesaController extends Controller
 {    
@@ -194,15 +196,28 @@ class MpesaController extends Controller
         
         $response = json_decode(curl_exec($curl));
         curl_close($curl);
-     
+    
         if($response->ResponseCode == "0"){
             Session::flash('Success','Successful withdrawal! Payment will reflect in a few');
+            
+            //save to MPESA transactions table    
+            $transaction = new MpesaTransaction;
+            $transaction->user_id = Auth::user()->id;
+            $transaction->type = "Withdraw";
+            $transaction->amount = $request->amount;
+            $transaction->receipt_number = 'QL'.Str::random(8);
+            $transaction->transaction_date = date('Y-m-d H:i:s');
+            $transaction->phone_number = Auth::user()->phone;
+            $transaction->status = "sent";
+            $transaction->save();
+            
+            return redirect()->back();
         }
         else{
            Session::flash('error','Failed to withdraw!'); 
+           return redirect()->back();
         }
         
-        return redirect()->back();
     }
 
     public function stkPush(Request $request){
@@ -245,8 +260,17 @@ class MpesaController extends Controller
         curl_close($curl);
         
         if($response->ResponseCode == "0"){
-            //return redirect()->to('/confirm_payment');
-            Session::flash('Success','Processing payment....'); 
+           //return redirect()->to('/confirm_payment');
+           Session::flash('Success','Processing payment....'); 
+           $user = User::find(Auth::user()->id);
+           
+           $mailData = [
+              'username' => Auth::user()->username,
+              'amount' => $request->amount
+           ];
+      
+           Notification::send($user, new DepositNotification($mailData));
+           
            return redirect()->back();
         }
         else{
@@ -338,12 +362,6 @@ class MpesaController extends Controller
         
         //reading from txt file
         //$file = file_get_contents("MPESAConfirmationResponse.txt");
-        $ch = curl_init();
-        $path = public_path('MPESAConfirmationResponse.txt');
-        curl_setopt($ch, CURLOPT_URL, $path);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $file = curl_exec($ch);
-        curl_close($ch);
         $file2 = json_decode($file, true);
         $stkCallBack = json_encode($file2['Body']['stkCallback']);
         $callBackData = json_decode($stkCallBack,true);

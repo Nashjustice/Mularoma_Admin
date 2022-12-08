@@ -161,11 +161,15 @@ class HomeController extends Controller
     	 }
     	 
     	//Get different balances
-        $mainWallet = $cash->main;
+        $mainWalletInitial = $cash->main;
         $referalEarning = $cash->referal;
         $tokenBalance= $cash->token;
-     
-         return view('user.index')->with(compact('tokenBalance','mainWallet', 'depositBalance', 'withdraw', 'referalEarning'));
+        
+        //main wallet actual balance
+    	$totalWithdrawal = MpesaTransaction::where('user_id', Auth::user()->id)->where('type', 'Withdraw')->sum('amount');
+        $mainWallet = $mainWalletInitial - $totalWithdrawal; 
+        
+        return view('user.index')->with(compact('tokenBalance','mainWallet', 'depositBalance', 'withdraw', 'referalEarning'));
     }
     
     //function to count number of days since created

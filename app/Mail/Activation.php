@@ -34,7 +34,7 @@ class Activation extends Mailable
     public function build()
     {
         return $this
-        ->from('info@elshadaigtinvestment.org',$this->subject)
+        ->from('info@mulatoken.co.ke',$this->subject)
         ->markdown('emails.Activation');
     }
 }
