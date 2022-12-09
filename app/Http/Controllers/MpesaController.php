@@ -15,6 +15,7 @@ use App\Notifications\Activation;
 use File;
 use Illuminate\Support\Str;
 use App\Notifications\DepositNotification;
+use App\Notifications\WithdrawalNotification;
 
 class MpesaController extends Controller
 {    
@@ -211,7 +212,14 @@ class MpesaController extends Controller
             $transaction->status = "sent";
             $transaction->save();
             
-            return redirect()->back();
+            $mailData = [
+              'username' => Auth::user()->username,
+              'amount' => $request->amount
+           ];
+      
+           Notification::send($user, new WithdrawalNotification($mailData));
+            
+           return redirect()->back();
         }
         else{
            Session::flash('error','Failed to withdraw!'); 

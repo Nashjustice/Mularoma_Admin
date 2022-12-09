@@ -17,7 +17,7 @@ class DepositNotification extends Notification
      *
      * @return void
      */
-     private $amailData;
+     public $mailData;
      
     public function __construct($mailData)
     {
