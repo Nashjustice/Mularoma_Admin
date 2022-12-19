@@ -200,7 +200,7 @@ class MpesaController extends Controller
     
         if($response->ResponseCode == "0"){
             Session::flash('Success','Successful withdrawal! Payment will reflect in a few');
-            
+             $user = User::find(Auth::user()->id);
             //save to MPESA transactions table    
             $transaction = new MpesaTransaction;
             $transaction->user_id = Auth::user()->id;
@@ -217,7 +217,7 @@ class MpesaController extends Controller
               'amount' => $request->amount
            ];
       
-           Notification::send($user, new WithdrawalNotification($mailData));
+           //Notification::send($user, new WithdrawalNotification($mailData));
             
            return redirect()->back();
         }
@@ -227,7 +227,7 @@ class MpesaController extends Controller
         }
         
     }
-
+    
     public function stkPush(Request $request){
         $curl = curl_init();
 

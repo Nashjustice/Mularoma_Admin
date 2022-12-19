@@ -17,9 +17,9 @@ class WithdrawalNotification extends Notification
      *
      * @return void
      */
-    public $mailData;
-    
-    public function __construct($mailData)
+     public $mailData;
+     
+    public function __construct()
     {
         $this->mailData = $mailData;
     }

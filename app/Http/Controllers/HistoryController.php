@@ -13,7 +13,7 @@ use App\User;
 class HistoryController extends Controller
 {    
     public function withdrawalHistory(){
-        $data = MpesaTransaction::where('user_id', Auth::user()->id)->where('type', 'Withdraw')->orWhere('type', 'ReferalToWallet')->orWhere('type', 'TokenToWallet')->orderBy('id', 'DESC')->get();
+        $data = MpesaTransaction::where('user_id', Auth::user()->id)->orderBy('id', 'DESC')->get();
         return view('user.withdraw_history', ['transactions' => $data]);
     }
     

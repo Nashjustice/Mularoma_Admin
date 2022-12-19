@@ -580,8 +580,8 @@ class AffiliatesController extends Controller
      $tokenBalance = $wallet[0]->token;
      $mainWallet = $wallet[0]->main;
      
-     if($tokenBalance < 2000){
-        Session::flash('error','Insufficient token balance! You should have more than Ksh.2000');
+     if($tokenBalance < 250){
+        Session::flash('error','Insufficient token balance! You should have more than Ksh.250');
         return redirect()->back(); 
      }
      
@@ -621,9 +621,8 @@ class AffiliatesController extends Controller
      
      $charge = new Charge;
      $charge->amount = $charges;
+     $charge->user_id = Auth::user()->id;
      $charge->save();
-     
-     
      
      $user = Wallet::find($wallet[0]->id);
      $user->token = $newTokenBalance;
@@ -649,17 +648,17 @@ class AffiliatesController extends Controller
      
      $charges = 0;
       
-     if($withdrawalAmount >= 200 && $withdrawalAmount <= 999){
-       $charges = 23;  
-     }elseif($withdrawalAmount >= 1000 && $withdrawalAmount <= 2499){
-       $charges = 35;  
-     }elseif($withdrawalAmount >= 2500 && $withdrawalAmount <= 4999){
-       $charges = 56;  
-     }elseif($withdrawalAmount >= 5000 && $withdrawalAmount <= 9999){
-       $charges = 85;  
-     }elseif($withdrawalAmount >= 10000 && $withdrawalAmount <= 30000){
-       $charges = 112;  
-     }
+    //  if($withdrawalAmount >= 200 && $withdrawalAmount <= 999){
+    //   $charges = 23;  
+    //  }elseif($withdrawalAmount >= 1000 && $withdrawalAmount <= 2499){
+    //   $charges = 35;  
+    //  }elseif($withdrawalAmount >= 2500 && $withdrawalAmount <= 4999){
+    //   $charges = 56;  
+    //  }elseif($withdrawalAmount >= 5000 && $withdrawalAmount <= 9999){
+    //   $charges = 85;  
+    //  }elseif($withdrawalAmount >= 10000 && $withdrawalAmount <= 30000){
+    //   $charges = 112;  
+    //  }
   
      $afterTransactionCharge = $withdrawalAmount - $charges; 
      $newRefBalance = $refBalance - $withdrawalAmount;
@@ -679,9 +678,9 @@ class AffiliatesController extends Controller
      $user->referal = $newRefBalance;
      $user->main = $newMainBalance;
      
-     $charge = new Charge;
-     $charge->amount = $charges;
-     $charge->save();
+    //  $charge = new Charge;
+    //  $charge->amount = $charges;
+    //  $charge->save();
      
      if($user->save()){
          Session::flash('Success','KSH.'.$withdrawalAmount.' moved to main wallet!. Transaction cost Ksh.'.$charges);

@@ -35,13 +35,14 @@ use App\kyc;
 use App\ref_set;
 use App\Wallet;
 use App\MpesaTransaction;
+use App\Charge;
 use GuzzleHttp\Client as GuzzleClient;
 use DotenvEditor;
 use App\TokenHistory;
 
 use CoinbaseCommerce\ApiClient;
 use CoinbaseCommerce\Resources\Checkout;
-use CoinbaseCommerce\Resources\Charge;
+//use CoinbaseCommerce\Resources\Charge;
 
 use Google2FA;
 
@@ -107,6 +108,8 @@ class HomeController extends Controller
         $toMpesaWithdraw = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','Withdraw')->sum('amount');
         $toTokenWallet = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','TokenToWallet')->sum('amount');
         $toReferalWallet = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','ReferalToWallet')->sum('amount');
+        $toMainWallet = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','AddToMain')->sum('amount');
+        $allTransactionCharges = Charge::where('user_id',Auth::user()->id)->sum('amount');
         $withdraw = $toMpesaWithdraw + $toTokenWallet + $toReferalWallet;
         
         //actual deposit balance        
@@ -135,12 +138,15 @@ class HomeController extends Controller
     	 $level_4s=array();
 
     	 foreach ($refs as $ref) {
-    	 	$wallet = Wallet::where('user_id',$ref->id)->first();
-            $bonus = $wallet->deposited * 0.1;
-            
+    	 	//$wallet = Wallet::where('user_id',$ref->id)->first();
+    	 	$allDeposits = MpesaTransaction::where('user_id',$ref->id)->where('type','Deposit')->sum('amount');
+    	 	$allRefelToWallet = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','ReferalToWallet')->sum('amount');
+            $bonus = $allDeposits * 0.1;
+
             $refereeWallet = Wallet::where('user_id', Auth::user()->id)->first();
-            $initialBonus = $refereeWallet->referal;
-            $newBonus = $initialBonus + $bonus;
+             // = $refereeWallet->referal;
+             //$newBonus = $initialBonus + $bonus;
+            $newBonus = $bonus - $allRefelToWallet;
             $refereeWallet->referal = $newBonus;
             $refereeWallet->save();
             
@@ -161,14 +167,19 @@ class HomeController extends Controller
     	 }
     	 
     	//Get different balances
-        $mainWalletInitial = $cash->main;
+        //$mainWalletInitial = $cash->main;
         $referalEarning = $cash->referal;
         $tokenBalance= $cash->token;
         
         //main wallet actual balance
-    	$totalWithdrawal = MpesaTransaction::where('user_id', Auth::user()->id)->where('type', 'Withdraw')->sum('amount');
-        $mainWallet = $mainWalletInitial - $totalWithdrawal; 
-        
+    	//$totalWithdrawal = MpesaTransaction::where('user_id', Auth::user()->id)->where('type', 'Withdraw')->sum('amount');
+    	$accumilatedWithdrawal = $toTokenWallet + $toReferalWallet + $toMainWallet;
+    	$mainWallet = $accumilatedWithdrawal - $toMpesaWithdraw - $allTransactionCharges;
+        //$mainWallet = $mainWalletInitial - $totalWithdrawal;
+        $finalMainBalance = Wallet::where('user_id', Auth::user()->id)->first();
+        $finalMainBalance->main = $mainWallet;
+        $finalMainBalance->save();
+
         return view('user.index')->with(compact('tokenBalance','mainWallet', 'depositBalance', 'withdraw', 'referalEarning'));
     }
     

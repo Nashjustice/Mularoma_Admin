@@ -27,7 +27,7 @@
 							<form class="form-horizontal" action="{{url('ref/withdraw')}}" method="post">
 								@csrf
 								<div class="form-group">
-									<input type="number" class="form-control" name="amount" placeholder="amount" required>
+									<input type="number" class="form-control" name="amount"  min="200" placeholder="amount" required>
 								</div>
 								
 								
@@ -52,7 +52,7 @@
 							<form class="form-horizontal" action="{{url('inv/withdraw')}}" method="post">
 								@csrf
 								<div class="form-group">
-									<input type="number" class="form-control" name="amount" placeholder="amount" required>
+									<input type="number" class="form-control" name="amount"  min="250" placeholder="amount" required>
 								</div>
 								
 								
@@ -78,7 +78,7 @@
 							<form class="form-horizontal" action="{{url('/b2c')}}" method="post">
 								@csrf
 								<div class="form-group">
-									<input type="number" class="form-control" name="amount" placeholder="amount" min="200" max="50000" required>
+									<input type="number" class="form-control" name="amount" placeholder="amount" min="250" max="50000" required>
 								</div>
 								
 								
