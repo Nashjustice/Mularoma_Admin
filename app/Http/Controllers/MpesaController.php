@@ -217,7 +217,7 @@ class MpesaController extends Controller
               'amount' => $request->amount
            ];
       
-           //Notification::send($user, new WithdrawalNotification($mailData));
+           Notification::send($user, new WithdrawalNotification($mailData));
             
            return redirect()->back();
         }
@@ -287,8 +287,7 @@ class MpesaController extends Controller
         }
         
     }
-
-
+    
     /*
      *Responses coming from MPESA
      */

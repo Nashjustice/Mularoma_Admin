@@ -19,7 +19,7 @@ class WithdrawalNotification extends Notification
      */
      public $mailData;
      
-    public function __construct()
+    public function __construct($mailData)
     {
         $this->mailData = $mailData;
     }
@@ -45,7 +45,7 @@ class WithdrawalNotification extends Notification
     {
         return (new MailMessage)
                     ->line('Hello '.$this->mailData['username'])
-                    ->line('Your withdrawal of Ksh.'.$this->mailData['amount'].' to Mulatoken was successful')
+                    ->line('Your withdrawal of Ksh.'.$this->mailData['amount'].' from Mulatoken was successful')
                     ->line('Thank you for using our application!');
     }
 

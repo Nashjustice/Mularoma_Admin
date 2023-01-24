@@ -144,20 +144,32 @@ class HomeController extends Controller
             $bonus = $allDeposits * 0.1;
 
             $refereeWallet = Wallet::where('user_id', Auth::user()->id)->first();
-             // = $refereeWallet->referal;
-             //$newBonus = $initialBonus + $bonus;
             $newBonus = $bonus - $allRefelToWallet;
             $refereeWallet->referal = $newBonus;
             $refereeWallet->save();
-            
+    
     	 	$level_twos=User::where('referal',$ref->username)->get();
 
     	 	foreach ($level_twos as $level_two) {
-    	 		# code...
+    // 	 		$allDeposits = MpesaTransaction::where('user_id',$ref->id)->where('type','Deposit')->sum('amount');
+    // 	 	$allRefelToWallet = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','ReferalToWallet')->sum('amount');
+    //         $bonus = $allDeposits * 0.1;
+
+    //         $refereeWallet = Wallet::where('user_id', Auth::user()->id)->first();
+    //         $newBonus = $bonus - $allRefelToWallet;
+    //         $refereeWallet->referal = $newBonus;
+    //         $refereeWallet->save();
     	 			$level_threes=User::where('referal',$level_two->username)->get();
 
     	 			foreach ($level_threes as $level_three) {
-    	 				# code...
+    // 	 				$allDeposits = MpesaTransaction::where('user_id',$ref->id)->where('type','Deposit')->sum('amount');
+    // 	 	$allRefelToWallet = MpesaTransaction::where('user_id',Auth::user()->id)->where('type','ReferalToWallet')->sum('amount');
+    //         $bonus = $allDeposits * 0.1;
+
+    //         $refereeWallet = Wallet::where('user_id', Auth::user()->id)->first();
+    //         $newBonus = $bonus - $allRefelToWallet;
+    //         $refereeWallet->referal = $newBonus;
+    //         $refereeWallet->save();
     	 				 $level_4s=User::where('referal',$level_three->username)->get();
 
     	 			}
